@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação - Base de Dados Academia</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+    <main class="content">
+        <header>
+            <h1>Base de Dados: <code>academia_db</code></h1>
+            <p>Documentação técnica da estrutura de tabelas, campos e relacionamentos.</p>
+        </header>
+
+        <hr>
+
+        <section>
+            <h2>Resumo da Estrutura</h2>
+            <p>O sistema é composto por 4 tabelas principais encarregues da gestão de clientes, planos contratados, controlo de acessos (vencimentos) e fichas de treino.</p>
+        </section>
+
+        <section>
+            <h2>1. Tabela <code>planos</code></h2>
+            <p>Guarda os pacotes comerciais disponíveis para venda.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Campo</th>
+                        <th>Tipo</th>
+                        <th>Chave</th>
+                        <th>Descrição</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>id_plano</code></td>
+                        <td>INT</td>
+                        <td>PK (Auto)</td>
+                        <td>Identificador único do plano.</td>
+                    </tr>
+                    <tr>
+                        <td><code>nome</code></td>
+                        <td>VARCHAR(100)</td>
+                        <td>-</td>
+                        <td>Nome comercial (ex: Mensal, Anual).</td>
+                    </tr>
+                    <tr>
+                        <td><code>valor</code></td>
+                        <td>DECIMAL(10,2)</td>
+                        <td>-</td>
+                        <td>Preço em euros/reais (não aceita nulo).</td>
+                    </tr>
+                    <tr>
+                        <td><code>duracao_meses</code></td>
+                        <td>INT</td>
+                        <td>-</td>
+                        <td>Validade do plano em meses.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>2. Tabela <code>alunos</code></h2>
+            <p>Registo dos dados pessoais e de contacto dos utilizadores.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Campo</th>
+                        <th>Tipo</th>
+                        <th>Chave</th>
+                        <th>Descrição</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>id_aluno</code></td>
+                        <td>INT</td>
+                        <td>PK (Auto)</td>
+                        <td>Identificador único do aluno.</td>
+                    </tr>
+                    <tr>
+                        <td><code>nome</code></td>
+                        <td>VARCHAR(100)</td>
+                        <td>-</td>
+                        <td>Nome completo do aluno.</td>
+                    </tr>
+                    <tr>
+                        <td><code>cpf</code></td>
+                        <td>VARCHAR(14)</td>
+                        <td>UNIQUE</td>
+                        <td>Documento único de identificação.</td>
+                    </tr>
+                    <tr>
+                        <td><code>telefone</code></td>
+                        <td>VARCHAR(20)</td>
+                        <td>-</td>
+                        <td>Número de contacto.</td>
+                    </tr>
+                    <tr>
+                        <td><code>data_cadastro</code></td>
+                        <td>DATETIME</td>
+                        <td>-</td>
+                        <td>Data e hora da criação do registo.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>3. Tabela <code>matriculas</code></h2>
+            <p>Associa um aluno a um plano e define a validade do seu acesso.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Campo</th>
+                        <th>Tipo</th>
+                        <th>Chave</th>
+                        <th>Descrição</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>id_matricula</code></td>
+                        <td>INT</td>
+                        <td>PK (Auto)</td>
+                        <td>Identificador da matrícula.</td>
+                    </tr>
+                    <tr>
+                        <td><code>aluno_id</code></td>
+                        <td>INT</td>
+                        <td>FK</td>
+                        <td>Aponta para <code>alunos.id_aluno</code> (Cascata ao apagar).</td>
+                    </tr>
+                    <tr>
+                        <td><code>plano_id</code></td>
+                        <td>INT</td>
+                        <td>FK</td>
+                        <td>Aponta para <code>planos.id_plano</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>data_inicio</code></td>
+                        <td>DATE</td>
+                        <td>-</td>
+                        <td>Data em que a matrícula começa.</td>
+                    </tr>
+                    <tr>
+                        <td><code>data_vencimento</code></td>
+                        <td>DATE</td>
+                        <td>-</td>
+                        <td>Data de término do contrato.</td>
+                    </tr>
+                    <tr>
+                        <td><code>status</code></td>
+                        <td>ENUM</td>
+                        <td>-</td>
+                        <td>Estado atual: 'ativa', 'vencida' ou 'concelada'.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>4. Tabela <code>treinos</code></h2>
+            <p>Contém os exercícios atribuídos a cada aluno.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Campo</th>
+                        <th>Tipo</th>
+                        <th>Chave</th>
+                        <th>Descrição</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>id_treino</code></td>
+                        <td>INT</td>
+                        <td>PK (Auto)</td>
+                        <td>Identificador do exercício na ficha.</td>
+                    </tr>
+                    <tr>
+                        <td><code>id_aluno</code></td>
+                        <td>INT</td>
+                        <td>FK</td>
+                        <td>Aponta para <code>alunos.id_aluno</code> (Cascata ao apagar).</td>
+                    </tr>
+                    <tr>
+                        <td><code>divisao</code></td>
+                        <td>CHAR(20)</td>
+                        <td>-</td>
+                        <td>Grupo do treino (ex: Treino A, Treino B).</td>
+                    </tr>
+                    <tr>
+                        <td><code>exercicio</code></td>
+                        <td>VARCHAR(100)</td>
+                        <td>-</td>
+                        <td>Nome do exercício a realizar.</td>
+                    </tr>
+                    <tr>
+                        <td><code>series</code></td>
+                        <td>INT</td>
+                        <td>-</td>
+                        <td>Quantidade de séries.</td>
+                    </tr>
+                    <tr>
+                        <td><code>repeticoes</code></td>
+                        <td>INT</td>
+                        <td>-</td>
+                        <td>Número de repetições por série.</td>
+                    </tr>
+                    <tr>
+                        <td><code>carga_kg</code></td>
+                        <td>DECIMAL(5,2)</td>
+                        <td>-</td>
+                        <td>Peso em quilogramas (opcional).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>Relacionamentos do Sistema</h2>
+            <p>1. <strong>Um Aluno pode ter várias Matrículas</strong> ao longo do tempo, mas cada matrícula refere-se a apenas um <strong>Plano</strong>.</p>
+            <p>2. <strong>Um Aluno possui vários Treinos</strong> registados na sua ficha.</p>
+            <p>3. A regra <code>ON DELETE CASCADE</code> garante que, ao eliminar um aluno, todas as suas matrículas e fichas de treino são apagadas automaticamente da base de dados.</p>
+        </section>
+    </main>
+
+</body>
+</html>
